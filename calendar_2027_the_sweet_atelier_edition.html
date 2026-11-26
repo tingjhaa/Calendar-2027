@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calendar 2027 — The Sweet Atelier Edition</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Cormorant Garamond, Plus Jakarta Sans & Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            serifLux: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sansClean: ['"Plus Jakarta Sans"', '"Prompt"', 'sans-serif'],
+            thai: ['"Prompt"', '"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            porcelain: {
+              50: '#FFFFFF',
+              100: '#FAFAFA',
+              200: '#F5F4F0',
+              300: '#ECEAE3',
+            },
+            champagne: {
+              100: '#FAF6EC',
+              200: '#EFE3C6',
+              300: '#DFC78C',
+              400: '#C5A059',
+              500: '#A6823C',
+            },
+            obsidian: {
+              800: '#1D1C1A',
+              900: '#121110',
+            },
+            rougeDior: '#9E2A2B',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --bg-page: #F6F5F1;
+      --bg-surface: #FFFFFF;
+      --bg-subtle: #FAF9F6;
+      --text-main: #1C1B1A;
+      --text-muted: #6E6A63;
+      --border-gold: rgba(197, 160, 89, 0.38);
+    }
+
+    html.dark {
+      --bg-page: #11100F;
+      --bg-surface: #181715;
+      --bg-subtle: #201E1B;
+      --text-main: #F7F5F0;
+      --text-muted: #A39D93;
+      --border-gold: rgba(223, 199, 140, 0.32);
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: 'Prompt', 'Plus Jakarta Sans', sans-serif;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Minimal Trunk Double-Hairline Frame */
+    .atelier-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-gold);
+      box-shadow: 0 8px 28px -12px rgba(28, 27, 26, 0.06);
+    }
+
+    /* Selected Date Tile */
+    .day-selected {
+      background-color: #FAF6EC;
+      box-shadow: inset 0 0 0 1.5px #C5A059;
+    }
+
+    html.dark .day-selected {
+      background-color: rgba(197, 160, 89, 0.16);
+      box-shadow: inset 0 0 0 1.5px #DFC78C;
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(197, 160, 89, 0.4);
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="min-h-screen antialiased selection:bg-champagne-200 selection:text-obsidian-900">
+
+  <!-- Main Responsive Minimalist Shell -->
+  <div class="max-w-lg mx-auto min-h-screen flex flex-col bg-white dark:bg-[#161513] border-x border-champagne-400/25 shadow-sm transition-colors duration-300">
+
+    <!-- Fine Champagne Gold Top Hairline -->
+    <div class="h-[2px] w-full bg-gradient-to-r from-transparent via-champagne-400 to-transparent"></div>
+
+    <!-- 1. MINIMALIST HEADER -->
+    <header class="px-5 py-4 flex items-center justify-between border-b border-champagne-400/20 bg-white/95 dark:bg-[#161513]/95 backdrop-blur-md sticky top-0 z-30">
+      <div class="flex items-center gap-3">
+        <!-- Minimal CD Monogram Clasp Emblem -->
+        <div class="w-10 h-10 rounded-full border border-champagne-400/70 bg-porcelain-100 dark:bg-[#22201D] flex items-center justify-center shrink-0">
+          <span class="font-serifLux font-semibold text-sm tracking-widest text-champagne-500 dark:text-champagne-300">
+            CD
+          </span>
+        </div>
+        <div>
+          <h1 class="font-serifLux font-semibold text-xl sm:text-[22px] tracking-tight text-obsidian-800 dark:text-porcelain-100 leading-tight">
+            Calendar 2027
+          </h1>
+          <p class="text-[11px] font-sansClean tracking-wide text-neutral-500 dark:text-neutral-400">
+            The Sweet Atelier Edition · 30 Avenue Montaigne
+          </p>
+        </div>
+      </div>
+
+      <!-- Right Controls: Quick Note & Porcelain / Noir Theme Toggle -->
+      <div class="flex items-center gap-2">
+        <button onclick="openNoteModal()" title="เพิ่มบันทึกประจำวัน"
+          class="relative p-2.5 rounded-full border border-champagne-400/40 bg-porcelain-100 dark:bg-[#22201D] text-neutral-700 dark:text-champagne-200 hover:border-champagne-400 transition-all active:scale-95">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20h9"/>
+            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+          </svg>
+          <span id="headerNoteDot" class="hidden absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-champagne-400"></span>
+        </button>
+
+        <button onclick="toggleTheme()" id="themeToggleBtn"
+          class="flex items-center gap-1.5 px-3 py-2 rounded-full border border-champagne-400/40 bg-porcelain-100 dark:bg-[#22201D] text-neutral-700 dark:text-champagne-200 text-xs font-medium hover:border-champagne-400 transition-all active:scale-95">
+          <span id="themeIcon" class="text-champagne-500 dark:text-champagne-300">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+            </svg>
+          </span>
+          <span id="themeLabel">Noir</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- 2. CLEAN MINIMAL NAVIGATION TABS -->
+    <nav class="grid grid-cols-3 border-b border-champagne-400/20 bg-porcelain-100/70 dark:bg-[#141311] text-xs sm:text-[13px] sticky top-[73px] z-20">
+      <button onclick="switchTab('calendar')" id="tab-calendar"
+        class="py-3 px-2 text-center border-b-2 border-champagne-400 text-obsidian-800 dark:text-champagne-200 font-medium transition-all">
+        ปฏิทิน <span class="text-[11px] opacity-70">(Calendar)</span>
+      </button>
+      <button onclick="switchTab('holidays')" id="tab-holidays"
+        class="py-3 px-2 text-center border-b-2 border-transparent text-neutral-500 dark:text-neutral-400 hover:text-obsidian-800 dark:hover:text-champagne-200 transition-all">
+        วันสำคัญ <span class="text-[11px] opacity-70">(Holidays)</span>
+      </button>
+      <button onclick="switchTab('notes')" id="tab-notes"
+        class="py-3 px-2 text-center border-b-2 border-transparent text-neutral-500 dark:text-neutral-400 hover:text-obsidian-800 dark:hover:text-champagne-200 transition-all">
+        บันทึก <span class="text-[11px] opacity-70">(My Notes)</span>
+      </button>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 p-4 sm:p-5 space-y-5">
+
+      <!-- ========================================================= -->
+      <!-- TAB 1: CALENDAR VIEW                                      -->
+      <!-- ========================================================= -->
+      <section id="view-calendar" class="space-y-5">
+
+        <!-- 3. MINIMAL MONTH SELECTOR CARD -->
+        <div class="atelier-card rounded-2xl p-5 relative overflow-hidden">
+          <!-- Subtle Celestial Sunburst Arcs Watermark -->
+          <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-35 dark:opacity-20" viewBox="0 0 400 180" preserveAspectRatio="xMidYMax slice">
+            <circle cx="200" cy="180" r="145" fill="none" stroke="#C5A059" stroke-width="0.8"/>
+            <circle cx="200" cy="180" r="110" fill="none" stroke="#C5A059" stroke-width="0.6" stroke-dasharray="3 3"/>
+          </svg>
+
+          <div class="relative z-10 flex items-center justify-between">
+            <button onclick="changeMonth(-1)" aria-label="เดือนก่อนหน้า"
+              class="w-9 h-9 rounded-full border border-champagne-400/40 bg-white dark:bg-[#22201D] flex items-center justify-center text-neutral-700 dark:text-champagne-200 hover:border-champagne-400 transition-all active:scale-95">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+
+            <div class="text-center">
+              <p id="monthYearTop" class="text-[11px] font-sansClean uppercase tracking-[0.2em] text-champagne-500 dark:text-champagne-300 font-medium">
+                MARCH 2027 · พ.ศ. 2570
+              </p>
+              <h2 id="monthTitleTh" class="font-thai font-semibold text-2xl sm:text-3xl text-obsidian-800 dark:text-porcelain-100 mt-0.5">
+                มีนาคม 2027
+              </h2>
+            </div>
+
+            <button onclick="changeMonth(1)" aria-label="เดือนถัดไป"
+              class="w-9 h-9 rounded-full border border-champagne-400/40 bg-white dark:bg-[#22201D] flex items-center justify-center text-neutral-700 dark:text-champagne-200 hover:border-champagne-400 transition-all active:scale-95">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+
+          <div class="relative z-10 mt-4 pt-3 border-t border-champagne-400/15 flex items-center justify-between text-xs">
+            <button onclick="resetToDefaultMonth()"
+              class="px-3 py-1 rounded-full border border-champagne-400/45 text-neutral-700 dark:text-champagne-200 hover:bg-champagne-100/60 dark:hover:bg-[#24211D] transition-colors">
+              มีนาคม 2027
+            </button>
+            <span class="font-serifLux italic text-xs text-champagne-500 dark:text-champagne-300">
+              Dior Holiday Collection
+            </span>
+          </div>
+        </div>
+
+        <!-- 4. CLEAN MINIMAL CALENDAR GRID -->
+        <div class="atelier-card rounded-2xl overflow-hidden">
+          <!-- Minimal Weekday Header -->
+          <div class="grid grid-cols-7 text-center text-[11px] font-medium tracking-wider uppercase border-b border-champagne-400/20 bg-porcelain-100 dark:bg-[#1E1C19] py-2.5">
+            <div class="text-rougeDior dark:text-rose-400">อา.</div>
+            <div class="text-neutral-500 dark:text-neutral-400">จ.</div>
+            <div class="text-neutral-500 dark:text-neutral-400">อ.</div>
+            <div class="text-neutral-500 dark:text-neutral-400">พ.</div>
+            <div class="text-neutral-500 dark:text-neutral-400">พฤ.</div>
+            <div class="text-neutral-500 dark:text-neutral-400">ศ.</div>
+            <div class="text-champagne-500 dark:text-champagne-300">ส.</div>
+          </div>
+
+          <!-- Days Matrix -->
+          <div id="calendarGrid" class="grid grid-cols-7 divide-x divide-y divide-champagne-400/15">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- 5. SELECTED DATE & ADVENT DRAWER CARD -->
+        <div class="atelier-card rounded-2xl p-5 space-y-4">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p id="selectedWeekdayEn" class="text-[11px] uppercase tracking-[0.18em] text-champagne-500 dark:text-champagne-300 font-medium">
+                MONDAY · WEEK 9
+              </p>
+              <h3 id="selectedFullDateTh" class="font-thai font-semibold text-xl sm:text-2xl text-obsidian-800 dark:text-porcelain-100 mt-0.5">
+                วันจันทร์ที่ 1 มีนาคม 2027
+              </h3>
+              <p id="selectedSubDate" class="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
+                1 March 2027 · พุทธศักราช 2570
+              </p>
+            </div>
+
+            <!-- Holiday Pill if applicable -->
+            <span id="selectedHolidayBadge" class="hidden px-2.5 py-1 rounded-full bg-rougeDior/10 text-rougeDior dark:bg-rose-500/15 dark:text-rose-300 text-[11px] font-medium shrink-0">
+            </span>
+          </div>
+
+          <!-- Minimalist Dior Advent Drawer Card (1–24) -->
+          <div class="rounded-xl p-4 bg-porcelain-100 dark:bg-[#1E1C19] border border-champagne-400/30">
+            <div class="flex items-center justify-between mb-1.5">
+              <div class="flex items-center gap-2">
+                <span id="adventDrawerTag" class="px-2 py-0.5 rounded-full border border-champagne-400/60 text-[10px] font-serifLux font-semibold tracking-wider text-champagne-500 dark:text-champagne-300">
+                  DRAWER N° 01
+                </span>
+                <span class="text-[11px] text-neutral-500 dark:text-neutral-400">The Sweet Atelier</span>
+              </div>
+              <button onclick="openNoteModal()" class="text-xs font-medium text-champagne-500 dark:text-champagne-300 hover:underline">
+                + เพิ่มโน้ต
+              </button>
+            </div>
+            <p id="adventDrawerTitle" class="font-serifLux font-semibold text-base text-obsidian-800 dark:text-porcelain-100">
+              Dior Délice Scented Candle
+            </p>
+            <p id="adventDrawerDesc" class="text-xs text-neutral-600 dark:text-neutral-300 mt-0.5 leading-relaxed">
+              เทียนหอมกลิ่นขนมปังขิงอบอุ่นผสานซินนามอน น้ำผึ้ง และวานิลลา จาก 30 Avenue Montaigne
+            </p>
+          </div>
+
+          <!-- Inline Personal Note Display / Quick Edit -->
+          <div class="pt-1">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xs font-medium text-neutral-600 dark:text-neutral-300">บันทึกประจำวัน (Personal Note)</span>
+              <button onclick="openNoteModal()" class="text-[11px] text-neutral-500 hover:text-champagne-500">
+                แก้ไข
+              </button>
+            </div>
+            <div id="inlineNoteBox" onclick="openNoteModal()"
+              class="cursor-pointer rounded-xl p-3 border border-dashed border-champagne-400/45 bg-white dark:bg-[#181715] text-xs text-neutral-500 dark:text-neutral-400 hover:border-champagne-400 transition-colors">
+              ยังไม่มีบันทึกสำหรับวันนี้ — แตะเพื่อเพิ่มนัดหมายหรือข้อความสำคัญ
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- TAB 2: HOLIDAYS & EVENTS 2026–2027                        -->
+      <!-- ========================================================= -->
+      <section id="view-holidays" class="hidden space-y-4">
+        <div class="atelier-card rounded-2xl p-4 flex items-center justify-between">
+          <div>
+            <h2 class="font-thai font-semibold text-lg text-obsidian-800 dark:text-porcelain-100">
+              วันหยุดและวันสำคัญ
+            </h2>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400">
+              ปฏิทินวันสำคัญประจำปี 2026 – 2027 (คลิกเพื่อดูในปฏิทิน)
+            </p>
+          </div>
+          <select id="holidayYearFilter" onchange="renderHolidaysList()"
+            class="px-3 py-1.5 rounded-full border border-champagne-400/50 bg-porcelain-100 dark:bg-[#22201D] text-xs font-medium text-obsidian-800 dark:text-champagne-200 focus:outline-none">
+            <option value="2027" selected>ปี 2027</option>
+            <option value="2026">ปี 2026</option>
+          </select>
+        </div>
+
+        <div id="holidaysListContainer" class="space-y-2.5">
+          <!-- Populated via JS -->
+        </div>
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- TAB 3: MY NOTES (SAVED NOTES MANAGER)                     -->
+      <!-- ========================================================= -->
+      <section id="view-notes" class="hidden space-y-4">
+        <div class="atelier-card rounded-2xl p-4 flex items-center justify-between">
+          <div>
+            <h2 class="font-thai font-semibold text-lg text-obsidian-800 dark:text-porcelain-100">
+              บันทึกทั้งหมดของฉัน
+            </h2>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400">
+              รายการนัดหมายและบันทึกส่วนตัวที่จัดเก็บไว้ในเครื่อง
+            </p>
+          </div>
+          <button onclick="openNoteModal()"
+            class="px-3.5 py-1.5 rounded-full bg-obsidian-800 dark:bg-champagne-400 text-white dark:text-obsidian-900 text-xs font-medium hover:opacity-90 transition-opacity">
+            + โน้ตใหม่
+          </button>
+        </div>
+
+        <div id="allNotesContainer" class="space-y-2.5">
+          <!-- Populated via JS -->
+        </div>
+      </section>
+
+    </main>
+
+    <!-- MINIMALIST FOOTER -->
+    <footer class="px-5 py-4 text-center border-t border-champagne-400/15 text-[11px] text-neutral-400 dark:text-neutral-500">
+      <p class="font-serifLux italic text-xs text-champagne-500 dark:text-champagne-300">
+        The Sweet Atelier of Dreams · 30 Avenue Montaigne
+      </p>
+      <p class="mt-0.5">#DiorBeauty #DiorHoliday2026 #TheSweetAtelierOfDream</p>
+    </footer>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- MINIMALIST NOTE MODAL                                     -->
+  <!-- ========================================================= -->
+  <div id="noteModal" class="hidden fixed inset-0 z-50 bg-black/45 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-2xl bg-white dark:bg-[#1A1917] border border-champagne-400/50 p-5 shadow-xl">
+      <div class="flex items-center justify-between pb-3 border-b border-champagne-400/20">
+        <div>
+          <span class="text-[10px] uppercase tracking-widest text-champagne-500 dark:text-champagne-300">ATELIER NOTE</span>
+          <h3 id="modalDateHeading" class="font-thai font-semibold text-base text-obsidian-800 dark:text-porcelain-100">
+            วันจันทร์ที่ 1 มีนาคม 2027
+          </h3>
+        </div>
+        <button onclick="closeNoteModal()" class="w-8 h-8 rounded-full hover:bg-porcelain-200 dark:hover:bg-[#262420] flex items-center justify-center text-neutral-500">
+          ✕
+        </button>
+      </div>
+
+      <div class="mt-4">
+        <textarea id="noteInput" rows="4" placeholder="เขียนบันทึก นัดหมาย หรือสิ่งที่ต้องทำ..."
+          class="w-full p-3 rounded-xl border border-champagne-400/40 bg-porcelain-100 dark:bg-[#141311] text-sm text-obsidian-800 dark:text-porcelain-100 focus:outline-none focus:border-champagne-400"></textarea>
+      </div>
+
+      <div class="mt-4 flex items-center justify-between">
+        <button onclick="deleteCurrentNote()" class="text-xs text-rougeDior dark:text-rose-400 hover:underline">
+          ลบบันทึกนี้
+        </button>
+        <div class="flex items-center gap-2">
+          <button onclick="closeNoteModal()" class="px-3.5 py-2 rounded-full text-xs text-neutral-500 hover:bg-porcelain-200 dark:hover:bg-[#262420]">
+            ยกเลิก
+          </button>
+          <button onclick="saveCurrentNote()" class="px-5 py-2 rounded-full bg-obsidian-800 dark:bg-champagne-400 text-white dark:text-obsidian-900 text-xs font-medium hover:opacity-90 transition-opacity">
+            บันทึก
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Minimal Toast -->
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-obsidian-800 dark:bg-champagne-300 text-white dark:text-obsidian-900 text-xs font-medium shadow-lg opacity-0 pointer-events-none transition-opacity duration-300">
+    บันทึกเรียบร้อยแล้ว
+  </div>
+
+  <script>
+    // --- 1. STANDARD THAI & ENGLISH CALENDAR DATA (2026 - 2027) ---
+    const THAI_MONTHS = [
+      'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+      'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+    ];
+
+    const EN_MONTHS = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+
+    const THAI_WEEKDAYS = [
+      'วันอาทิตย์', 'วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์'
+    ];
+
+    const EN_WEEKDAYS = [
+      'SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'
+    ];
+
+    // Standard Public Holidays & Key Events (2026 & 2027)
+    const HOLIDAYS_DB = {
+      // 2026
+      '2026-01-01': { title: 'วันขึ้นปีใหม่ (New Year’s Day)', type: 'holiday' },
+      '2026-02-14': { title: 'วันวาเลนไทน์ (Valentine’s Day)', type: 'event' },
+      '2026-03-03': { title: 'วันมาฆบูชา (Makha Bucha Day)', type: 'holiday' },
+      '2026-04-06': { title: 'วันจักรี (Chakri Memorial Day)', type: 'holiday' },
+      '2026-04-13': { title: 'วันสงกรานต์ (Songkran Festival)', type: 'holiday' },
+      '2026-04-14': { title: 'วันสงกรานต์ (Songkran Festival)', type: 'holiday' },
+      '2026-04-15': { title: 'วันสงกรานต์ (Songkran Festival)', type: 'holiday' },
+      '2026-05-01': { title: 'วันแรงงานแห่งชาติ (National Labour Day)', type: 'holiday' },
+      '2026-05-04': { title: 'วันฉัตรมงคล (Coronation Day)', type: 'holiday' },
+      '2026-05-31': { title: 'วันวิสาขบูชา (Visakha Bucha Day)', type: 'holiday' },
+      '2026-06-03': { title: 'วันเฉลิมพระชนมพรรษา สมเด็จพระนางเจ้าฯ พระบรมราชินี', type: 'holiday' },
+      '2026-07-28': { title: 'วันเฉลิมพระชนมพรรษา พระบาทสมเด็จพระเจ้าอยู่หัว', type: 'holiday' },
+      '2026-07-29': { title: 'วันอาสาฬหบูชา (Asalha Bucha Day)', type: 'holiday' },
+      '2026-08-12': { title: 'วันแม่แห่งชาติ (National Mother’s Day)', type: 'holiday' },
+      '2026-10-13': { title: 'วันนวมินทรมหาราช', type: 'holiday' },
+      '2026-10-23': { title: 'วันปิยมหาราช (Chulalongkorn Day)', type: 'holiday' },
+      '2026-12-05': { title: 'วันพ่อแห่งชาติ (National Father’s Day)', type: 'holiday' },
+      '2026-12-10': { title: 'วันรัฐธรรมนูญ (Constitution Day)', type: 'holiday' },
+      '2026-12-25': { title: 'วันคริสต์มาส · Dior Holiday 2026', type: 'event' },
+      '2026-12-31': { title: 'วันสิ้นปี (New Year’s Eve)', type: 'holiday' },
+
+      // 2027
+      '2027-01-01': { title: 'วันขึ้นปีใหม่ (New Year’s Day)', type: 'holiday' },
+      '2027-02-14': { title: 'วันวาเลนไทน์ (Valentine’s Day)', type: 'event' },
+      '2027-02-21': { title: 'วันมาฆบูชา (Makha Bucha Day)', type: 'holiday' },
+      '2027-04-06': { title: 'วันจักรี (Chakri Memorial Day)', type: 'holiday' },
+      '2027-04-13': { title: 'วันสงกรานต์ (Songkran Festival)', type: 'holiday' },
+      '2027-04-14': { title: 'วันสงกรานต์ (Songkran Festival)', type: 'holiday' },
+      '2027-04-15': { title: 'วันสงกรานต์ (Songkran Festival)', type: 'holiday' },
+      '2027-05-01': { title: 'วันแรงงานแห่งชาติ (National Labour Day)', type: 'holiday' },
+      '2027-05-04': { title: 'วันฉัตรมงคล (Coronation Day)', type: 'holiday' },
+      '2027-05-20': { title: 'วันวิสาขบูชา (Visakha Bucha Day)', type: 'holiday' },
+      '2027-06-03': { title: 'วันเฉลิมพระชนมพรรษา สมเด็จพระนางเจ้าฯ พระบรมราชินี', type: 'holiday' },
+      '2027-07-18': { title: 'วันอาสาฬหบูชา (Asalha Bucha Day)', type: 'holiday' },
+      '2027-07-28': { title: 'วันเฉลิมพระชนมพรรษา พระบาทสมเด็จพระเจ้าอยู่หัว', type: 'holiday' },
+      '2027-08-12': { title: 'วันแม่แห่งชาติ (National Mother’s Day)', type: 'holiday' },
+      '2027-10-13': { title: 'วันนวมินทรมหาราช', type: 'holiday' },
+      '2027-10-23': { title: 'วันปิยมหาราช (Chulalongkorn Day)', type: 'holiday' },
+      '2027-12-05': { title: 'วันพ่อแห่งชาติ (National Father’s Day)', type: 'holiday' },
+      '2027-12-10': { title: 'วันรัฐธรรมนูญ (Constitution Day)', type: 'holiday' },
+      '2027-12-25': { title: 'วันคริสต์มาส (Christmas Day)', type: 'event' },
+      '2027-12-31': { title: 'วันสิ้นปี (New Year’s Eve)', type: 'holiday' }
+    };
+
+    // Dior Holiday Advent Drawer Inspirations (Doors 01 - 24)
+    const ADVENT_DRAWERS = [
+      { title: 'Dior Délice Scented Candle', desc: 'เทียนหอมกลิ่นขนมปังขิงอบอุ่นผสานซินนามอน กานพลู น้ำผึ้ง และวานิลลา จาก 30 Avenue Montaigne' },
+      { title: 'J’adore L’Or Essence de Parfum', desc: 'กลิ่นหอมอันเจิดจรัสของมวลดอกไม้สีทอง สะท้อนความสง่างามเหนือกาลเวลา' },
+      { title: 'Rouge Dior — Cinnamon Glaze', desc: 'ลิปสติกเฉดสีอบอุ่นเปล่งประกาย สร้างสรรค์พิเศษสำหรับเทศกาลแห่งความฝัน' },
+      { title: 'L’Or de J’adore Music Box', desc: 'กล่องดนตรีลิมิเต็ดเอดิชัน บรรเลงท่วงทำนองแสนหวานแห่งเวิร์กช็อป 30 Montaigne' },
+      { title: 'The Malle des Rêves Trunk', desc: 'หีบของขวัญสีขาวงาช้างประดับอักษรย่อ CD สีทองแชมเปญ' },
+      { title: 'Miss Dior Blooming Bouquet', desc: 'ความสดชื่นอ่อนโยนของดอกพีโอนีและกุหลาบดามัสกัสในขวดประดับโบว์กูตูร์' },
+      { title: 'Bois des Rêves Candle', desc: 'กลิ่นไม้หอมอบอุ่นและเครื่องเทศอ่อนๆ เติมบรรยากาศแห่งการเฉลิมฉลอง' },
+      { title: 'Dior Addict Lip Glow Oil', desc: 'ออยล์บำรุงริมฝีปากมอบความฉ่ำวาวดุจน้ำตาลเคลือบแก้ว' }
+    ];
+
+    // --- 2. STATE & STORAGE ---
+    const STORAGE_KEY = 'dior_sweet_atelier_notes_v1';
+    let currentYear = 2027;
+    let currentMonth = 2; // March 2027
+    let selectedDate = new Date(2027, 2, 1);
+    let notesMap = {};
+
+    function loadNotes() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) notesMap = JSON.parse(raw);
+      } catch (e) {
+        notesMap = {};
+      }
+    }
+
+    function persistNotes() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(notesMap));
+      } catch (e) {
+        // Ignore storage errors in restricted frames
+      }
+    }
+
+    function toDateKey(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function getISOWeekNumber(dateObj) {
+      const temp = new Date(Date.UTC(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate()));
+      const dayNum = temp.getUTCDay() || 7;
+      temp.setUTCDate(temp.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(temp.getUTCFullYear(), 0, 1));
+      return Math.ceil((((temp - yearStart) / 86400000) + 1) / 7);
+    }
+
+    // --- 3. RENDER CALENDAR ---
+    function renderCalendar() {
+      const buddhistYear = currentYear + 543;
+      document.getElementById('monthYearTop').textContent =
+        `${EN_MONTHS[currentMonth].toUpperCase()} ${currentYear} · พ.ศ. ${buddhistYear}`;
+      document.getElementById('monthTitleTh').textContent =
+        `${THAI_MONTHS[currentMonth]} ${currentYear}`;
+
+      const grid = document.getElementById('calendarGrid');
+      grid.innerHTML = '';
+
+      const firstDay = new Date(currentYear, currentMonth, 1);
+      const lastDay = new Date(currentYear, currentMonth + 1, 0);
+      const startWeekday = firstDay.getDay();
+      const daysInMonth = lastDay.getDate();
+      const totalCells = Math.ceil((startWeekday + daysInMonth) / 7) * 7;
+
+      const selectedKey = toDateKey(selectedDate);
+
+      for (let i = 0; i < totalCells; i++) {
+        const dayNum = i - startWeekday + 1;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+
+        if (dayNum < 1 || dayNum > daysInMonth) {
+          btn.className = 'h-14 sm:h-16 bg-porcelain-100/50 dark:bg-[#131210] cursor-default';
+          btn.disabled = true;
+          grid.appendChild(btn);
+          continue;
+        }
+
+        const cellDate = new Date(currentYear, currentMonth, dayNum);
+        const key = toDateKey(cellDate);
+        const weekday = cellDate.getDay();
+        const isSelected = key === selectedKey;
+        const holidayInfo = HOLIDAYS_DB[key];
+        const hasNote = Boolean(notesMap[key]);
+
+        let textColor = 'text-obsidian-800 dark:text-porcelain-100';
+        if (holidayInfo && holidayInfo.type === 'holiday') {
+          textColor = 'text-rougeDior dark:text-rose-400 font-semibold';
+        } else if (weekday === 0) {
+          textColor = 'text-rougeDior dark:text-rose-400';
+        } else if (weekday === 6) {
+          textColor = 'text-champagne-500 dark:text-champagne-300';
+        }
+
+        btn.className = `h-14 sm:h-16 p-1.5 flex flex-col items-center justify-center relative transition-colors hover:bg-champagne-100/50 dark:hover:bg-[#22201C] focus:outline-none ${
+          isSelected ? 'day-selected z-10' : ''
+        }`;
+
+        btn.onclick = () => {
+          selectedDate = cellDate;
+          renderCalendar();
+          renderSelectedDetail();
+        };
+
+        // Subtle indicator dots (Holiday dot + Note dot)
+        const dotsHtml = `
+          <div class="flex items-center gap-1 mt-1 h-1.5">
+            ${holidayInfo ? `<span class="w-1.5 h-1.5 rounded-full ${holidayInfo.type === 'holiday' ? 'bg-rougeDior' : 'bg-champagne-400'}"></span>` : ''}
+            ${hasNote ? `<span class="w-1.5 h-1.5 rounded-full bg-obsidian-800 dark:bg-porcelain-100"></span>` : ''}
+          </div>
+        `;
+
+        btn.innerHTML = `
+          <span class="font-sansClean text-sm sm:text-base leading-none ${textColor}">
+            ${dayNum}
+          </span>
+          ${dotsHtml}
+        `;
+
+        grid.appendChild(btn);
+      }
+    }
+
+    function renderSelectedDetail() {
+      const weekdayIdx = selectedDate.getDay();
+      const day = selectedDate.getDate();
+      const monthIdx = selectedDate.getMonth();
+      const year = selectedDate.getFullYear();
+      const buddhistYear = year + 543;
+      const weekNum = getISOWeekNumber(selectedDate);
+      const key = toDateKey(selectedDate);
+
+      document.getElementById('selectedWeekdayEn').textContent =
+        `${EN_WEEKDAYS[weekdayIdx]} · WEEK ${weekNum}`;
+      document.getElementById('selectedFullDateTh').textContent =
+        `${THAI_WEEKDAYS[weekdayIdx]}ที่ ${day} ${THAI_MONTHS[monthIdx]} ${year}`;
+      document.getElementById('selectedSubDate').textContent =
+        `${day} ${EN_MONTHS[monthIdx]} ${year} · พ.ศ. ${buddhistYear}`;
+
+      // Holiday Badge
+      const holidayInfo = HOLIDAYS_DB[key];
+      const badgeEl = document.getElementById('selectedHolidayBadge');
+      if (holidayInfo) {
+        badgeEl.textContent = holidayInfo.title;
+        badgeEl.classList.remove('hidden');
+      } else {
+        badgeEl.classList.add('hidden');
+      }
+
+      // Advent Drawer (1 - 24)
+      const drawerNum = ((day - 1) % 24) + 1;
+      const drawerItem = ADVENT_DRAWERS[(day - 1) % ADVENT_DRAWERS.length];
+      document.getElementById('adventDrawerTag').textContent =
+        `DRAWER N° ${String(drawerNum).padStart(2, '0')}`;
+      document.getElementById('adventDrawerTitle').textContent = drawerItem.title;
+      document.getElementById('adventDrawerDesc').textContent = drawerItem.desc;
+
+      // Personal Note Preview
+      const noteText = notesMap[key];
+      const inlineBox = document.getElementById('inlineNoteBox');
+      const headerDot = document.getElementById('headerNoteDot');
+
+      if (noteText) {
+        headerDot.classList.remove('hidden');
+        inlineBox.className = 'cursor-pointer rounded-xl p-3 border border-champagne-400/50 bg-champagne-100/50 dark:bg-[#22201C] text-xs text-obsidian-800 dark:text-porcelain-100 leading-relaxed';
+        inlineBox.textContent = noteText;
+      } else {
+        headerDot.classList.add('hidden');
+        inlineBox.className = 'cursor-pointer rounded-xl p-3 border border-dashed border-champagne-400/45 bg-white dark:bg-[#181715] text-xs text-neutral-500 dark:text-neutral-400 hover:border-champagne-400 transition-colors';
+        inlineBox.textContent = 'ยังไม่มีบันทึกสำหรับวันนี้ — แตะเพื่อเพิ่มนัดหมายหรือข้อความสำคัญ';
+      }
+    }
+
+    function changeMonth(delta) {
+      let m = currentMonth + delta;
+      let y = currentYear;
+      if (m > 11) {
+        m = 0;
+        y++;
+      } else if (m < 0) {
+        m = 11;
+        y--;
+      }
+
+      if (y < 2026 || y > 2027) {
+        showToast('แสดงปฏิทินช่วงปี 2026 – 2027');
+        return;
+      }
+
+      currentYear = y;
+      currentMonth = m;
+      const maxD = new Date(currentYear, currentMonth + 1, 0).getDate();
+      selectedDate = new Date(currentYear, currentMonth, Math.min(selectedDate.getDate(), maxD));
+
+      renderCalendar();
+      renderSelectedDetail();
+    }
+
+    function resetToDefaultMonth() {
+      currentYear = 2027;
+      currentMonth = 2;
+      selectedDate = new Date(2027, 2, 1);
+      renderCalendar();
+      renderSelectedDetail();
+      showToast('มีนาคม 2027');
+    }
+
+    // --- 4. TABS & SECONDARY VIEWS ---
+    function switchTab(tabName) {
+      ['calendar', 'holidays', 'notes'].forEach(t => {
+        const view = document.getElementById(`view-${t}`);
+        const btn = document.getElementById(`tab-${t}`);
+        if (t === tabName) {
+          view.classList.remove('hidden');
+          btn.classList.add('border-champagne-400', 'text-obsidian-800', 'dark:text-champagne-200', 'font-medium');
+          btn.classList.remove('border-transparent', 'text-neutral-500', 'dark:text-neutral-400');
+        } else {
+          view.classList.add('hidden');
+          btn.classList.remove('border-champagne-400', 'text-obsidian-800', 'dark:text-champagne-200', 'font-medium');
+          btn.classList.add('border-transparent', 'text-neutral-500', 'dark:text-neutral-400');
+        }
+      });
+
+      if (tabName === 'holidays') renderHolidaysList();
+      if (tabName === 'notes') renderAllNotesList();
+    }
+
+    function renderHolidaysList() {
+      const yearFilter = document.getElementById('holidayYearFilter').value;
+      const container = document.getElementById('holidaysListContainer');
+
+      const entries = Object.entries(HOLIDAYS_DB)
+        .filter(([key]) => key.startsWith(yearFilter))
+        .sort(([a], [b]) => a.localeCompare(b));
+
+      container.innerHTML = entries.map(([key, info]) => {
+        const [y, m, d] = key.split('-').map(Number);
+        const dateObj = new Date(y, m - 1, d);
+        const isPublic = info.type === 'holiday';
+
+        return `
+          <button type="button" onclick="jumpToDate('${key}')"
+            class="w-full text-left atelier-card rounded-xl p-3.5 flex items-center justify-between gap-3 hover:border-champagne-400 transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-xl border border-champagne-400/40 bg-porcelain-100 dark:bg-[#22201D] flex flex-col items-center justify-center shrink-0">
+                <span class="font-sansClean font-semibold text-sm text-obsidian-800 dark:text-porcelain-100 leading-none">${d}</span>
+                <span class="text-[10px] text-champagne-500 dark:text-champagne-300 mt-0.5">${EN_MONTHS[m - 1].slice(0, 3).toUpperCase()}</span>
+              </div>
+              <div>
+                <p class="font-thai font-medium text-sm text-obsidian-800 dark:text-porcelain-100">${info.title}</p>
+                <p class="text-[11px] text-neutral-500 dark:text-neutral-400 mt-0.5">
+                  ${THAI_WEEKDAYS[dateObj.getDay()]}ที่ ${d} ${THAI_MONTHS[m - 1]} ${y}
+                </p>
+              </div>
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-medium shrink-0 ${
+              isPublic
+                ? 'bg-rougeDior/10 text-rougeDior dark:bg-rose-500/15 dark:text-rose-300'
+                : 'bg-champagne-100 text-champagne-500 dark:bg-champagne-400/15 dark:text-champagne-300'
+            }">
+              ${isPublic ? 'วันหยุด' : 'เทศกาล'}
+            </span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function renderAllNotesList() {
+      const container = document.getElementById('allNotesContainer');
+      const entries = Object.entries(notesMap).sort(([a], [b]) => a.localeCompare(b));
+
+      if (entries.length === 0) {
+        container.innerHTML = `
+          <div class="atelier-card rounded-2xl p-8 text-center space-y-2">
+            <p class="font-serifLux italic text-lg text-champagne-500 dark:text-champagne-300">No Notes Yet</p>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400">
+              ยังไม่มีบันทึกส่วนตัว แตะที่วันที่ในปฏิทินหรือปุ่ม "+ โน้ตใหม่" เพื่อเริ่มต้นจดบันทึก
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = entries.map(([key, text]) => {
+        const [y, m, d] = key.split('-').map(Number);
+        const dateObj = new Date(y, m - 1, d);
+        return `
+          <div onclick="jumpToDate('${key}')"
+            class="cursor-pointer atelier-card rounded-xl p-4 hover:border-champagne-400 transition-colors space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-medium text-champagne-500 dark:text-champagne-300">
+                ${THAI_WEEKDAYS[dateObj.getDay()]}ที่ ${d} ${THAI_MONTHS[m - 1]} ${y}
+              </span>
+              <span class="text-[11px] text-neutral-400">ดูในปฏิทิน →</span>
+            </div>
+            <p class="text-sm text-obsidian-800 dark:text-porcelain-100 leading-relaxed whitespace-pre-line">${escapeHtml(text)}</p>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function jumpToDate(dateKey) {
+      const [y, m, d] = dateKey.split('-').map(Number);
+      currentYear = y;
+      currentMonth = m - 1;
+      selectedDate = new Date(y, m - 1, d);
+      switchTab('calendar');
+      renderCalendar();
+      renderSelectedDetail();
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    // --- 5. NOTE MODAL & THEME TOGGLE ---
+    function openNoteModal() {
+      const key = toDateKey(selectedDate);
+      const day = selectedDate.getDate();
+      const monthName = THAI_MONTHS[selectedDate.getMonth()];
+      const year = selectedDate.getFullYear();
+      const weekday = THAI_WEEKDAYS[selectedDate.getDay()];
+
+      document.getElementById('modalDateHeading').textContent =
+        `${weekday}ที่ ${day} ${monthName} ${year}`;
+      document.getElementById('noteInput').value = notesMap[key] || '';
+      document.getElementById('noteModal').classList.remove('hidden');
+    }
+
+    function closeNoteModal() {
+      document.getElementById('noteModal').classList.add('hidden');
+    }
+
+    function saveCurrentNote() {
+      const key = toDateKey(selectedDate);
+      const val = document.getElementById('noteInput').value.trim();
+      if (val) {
+        notesMap[key] = val;
+        showToast('บันทึกเรียบร้อยแล้ว');
+      } else {
+        delete notesMap[key];
+      }
+      persistNotes();
+      closeNoteModal();
+      renderCalendar();
+      renderSelectedDetail();
+      if (!document.getElementById('view-notes').classList.contains('hidden')) {
+        renderAllNotesList();
+      }
+    }
+
+    function deleteCurrentNote() {
+      const key = toDateKey(selectedDate);
+      delete notesMap[key];
+      persistNotes();
+      document.getElementById('noteInput').value = '';
+      closeNoteModal();
+      renderCalendar();
+      renderSelectedDetail();
+      if (!document.getElementById('view-notes').classList.contains('hidden')) {
+        renderAllNotesList();
+      }
+      showToast('ลบบันทึกแล้ว');
+    }
+
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      const label = document.getElementById('themeLabel');
+      const icon = document.getElementById('themeIcon');
+
+      if (isDark) {
+        label.textContent = 'Porcelain';
+        icon.innerHTML = `<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>`;
+        showToast('Noir Atelier Mode');
+      } else {
+        label.textContent = 'Noir';
+        icon.innerHTML = `<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`;
+        showToast('Porcelain White Mode');
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.remove('opacity-0');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => {
+        t.classList.add('opacity-0');
+      }, 2200);
+    }
+
+    // --- 6. INITIALIZATION ---
+    window.addEventListener('DOMContentLoaded', () => {
+      loadNotes();
+      renderCalendar();
+      renderSelectedDetail();
+    });
+  </script>
+</body>
+</html>

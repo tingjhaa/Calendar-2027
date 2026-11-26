@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "Calendar 2027 — The Sweet Atelier",
+    "slug": "calendar-2027",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFFFF"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.atelier.calendar2027"
+    },
+    "android": {
+      "package": "com.atelier.calendar2027"
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}
